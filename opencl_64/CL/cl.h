@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008-2009 The Khronos Group Inc.
+ * Copyright (c) 2008-2010 The Khronos Group Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and/or associated documentation files (the
@@ -21,7 +21,7 @@
  * MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
  ******************************************************************************/
 
-/* $Revision: 11251 $ on $Date: 2010-05-05 22:29:51 +0530 (Wed, 05 May 2010) $ */
+/* $Revision: 11985 $ on $Date: 2010-07-15 11:16:06 -0700 (Thu, 15 Jul 2010) $ */
 
 #ifndef __OPENCL_CL_H
 #define __OPENCL_CL_H
@@ -53,7 +53,6 @@ typedef cl_ulong            cl_bitfield;
 typedef cl_bitfield         cl_device_type;
 typedef cl_uint             cl_platform_info;
 typedef cl_uint             cl_device_info;
-typedef cl_bitfield         cl_device_address_info;
 typedef cl_bitfield         cl_device_fp_config;
 typedef cl_uint             cl_device_mem_cache_type;
 typedef cl_uint             cl_device_local_mem_type;
@@ -147,6 +146,7 @@ typedef struct _cl_buffer_region {
 #define CL_INVALID_BUFFER_SIZE                      -61
 #define CL_INVALID_MIP_LEVEL                        -62
 #define CL_INVALID_GLOBAL_WORK_SIZE                 -63
+#define CL_INVALID_PROPERTY                         -64
 
 /* OpenCL Version */
 #define CL_VERSION_1_0                              1
@@ -781,8 +781,8 @@ extern CL_API_ENTRY cl_int CL_API_CALL
 clEnqueueReadBufferRect(cl_command_queue    /* command_queue */,
                         cl_mem              /* buffer */,
                         cl_bool             /* blocking_read */,
-                        const size_t *      /* buffer_offset */,
-                        const size_t *      /* host_offset */, 
+                        const size_t *      /* buffer_origin */,
+                        const size_t *      /* host_origin */, 
                         const size_t *      /* region */,
                         size_t              /* buffer_row_pitch */,
                         size_t              /* buffer_slice_pitch */,
@@ -807,9 +807,9 @@ clEnqueueWriteBuffer(cl_command_queue   /* command_queue */,
 extern CL_API_ENTRY cl_int CL_API_CALL
 clEnqueueWriteBufferRect(cl_command_queue    /* command_queue */,
                          cl_mem              /* buffer */,
-                         cl_bool             /* blocking_read */,
-                         const size_t *      /* buffer_offset */,
-                         const size_t *      /* host_offset */, 
+                         cl_bool             /* blocking_write */,
+                         const size_t *      /* buffer_origin */,
+                         const size_t *      /* host_origin */, 
                          const size_t *      /* region */,
                          size_t              /* buffer_row_pitch */,
                          size_t              /* buffer_slice_pitch */,
@@ -959,7 +959,7 @@ clEnqueueTask(cl_command_queue  /* command_queue */,
 
 extern CL_API_ENTRY cl_int CL_API_CALL
 clEnqueueNativeKernel(cl_command_queue  /* command_queue */,
-					  void (*user_func)(void *), 
+					  void (CL_CALLBACK *user_func)(void *), 
                       void *            /* args */,
                       size_t            /* cb_args */, 
                       cl_uint           /* num_mem_objects */,

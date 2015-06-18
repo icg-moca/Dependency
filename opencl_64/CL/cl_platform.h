@@ -1,5 +1,5 @@
 /**********************************************************************************
- * Copyright (c) 2008-2009 The Khronos Group Inc.
+ * Copyright (c) 2008-2010 The Khronos Group Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and/or associated documentation files (the
@@ -21,7 +21,7 @@
  * MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
  **********************************************************************************/
 
-/* $Revision: 11344 $ on $Date: 2010-05-12 01:42:10 +0530 (Wed, 12 May 2010) $ */
+/* $Revision: 11803 $ on $Date: 2010-06-25 10:02:12 -0700 (Fri, 25 Jun 2010) $ */
 
 #ifndef __CL_PLATFORM_H
 #define __CL_PLATFORM_H
@@ -36,13 +36,13 @@ extern "C" {
 #endif
 
 #if defined(_WIN32)
-#define CL_API_ENTRY
-#define CL_API_CALL         __stdcall
-#define CL_CALLBACK         __stdcall
+    #define CL_API_ENTRY
+    #define CL_API_CALL     __stdcall
+    #define CL_CALLBACK     __stdcall
 #else
-#define CL_API_ENTRY
-#define CL_API_CALL
-#define CL_CALLBACK  
+    #define CL_API_ENTRY
+    #define CL_API_CALL
+    #define CL_CALLBACK
 #endif
 
 #ifdef __APPLE__
@@ -150,7 +150,6 @@ typedef double                  cl_double;
 #define CL_MAXFLOAT         CL_FLT_MAX
 #define CL_INFINITY         CL_HUGE_VALF
 
-
 #else
 
 #include <stdint.h>
@@ -248,7 +247,7 @@ typedef double          cl_double   __attribute__((aligned(8)));
 #endif
 #define CL_MAXFLOAT         CL_FLT_MAX
 #define CL_INFINITY         CL_HUGE_VALF
-       
+
 #endif
 
 #include <stddef.h>
@@ -1168,6 +1167,29 @@ typedef union
 #endif
 }cl_double16;
 
+/* Macro to facilitate debugging 
+ * Usage:
+ *   Place CL_PROGRAM_STRING_DEBUG_INFO on the line before the first line of your source. 
+ *   The first line ends with:   CL_PROGRAM_STRING_BEGIN \"
+ *   Each line thereafter of OpenCL C source must end with: \n\
+ *   The last line ends in ";
+ *
+ *   Example:
+ *
+ *   const char *my_program = CL_PROGRAM_STRING_BEGIN "\
+ *   kernel void foo( int a, float * b )             \n\
+ *   {                                               \n\
+ *      // my comment                                \n\
+ *      *b[ get_global_id(0)] = a;                   \n\
+ *   }                                               \n\
+ *   ";
+ *
+ * This should correctly set up the line, (column) and file information for your source 
+ * string so you can do source level debugging.
+ */
+#define  __CL_STRINGIFY( _x )               # _x
+#define  _CL_STRINGIFY( _x )                __CL_STRINGIFY( _x )
+#define  CL_PROGRAM_STRING_DEBUG_INFO       "#line "  _CL_STRINGIFY(__LINE__) " \"" __FILE__ "\" \n\n" 
   
 #ifdef __cplusplus
 }
